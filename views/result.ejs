@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Analysis Result</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+    <style>
+        :root {
+            --primary: #2c5364;
+            --secondary: #20556b;
+            --accent: #4cc9f0;
+            --success: #4ade80;
+            --danger: #f87171;
+            --light: #f0fdf4;
+            --dark: #0f172a;
+            --text-light: #e2e8f0;
+            --text-dark: #0f172a;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom right, #20556b, #203a43, #2c5364);
+            min-height: 100vh;
+            padding: 30px;
+            color: var(--text-light);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h2, h3, h4 {
+            color: var(--text-light);
+        }
+        
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        h2:after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            bottom: -10px;
+            left: 25%;
+            background: var(--accent);
+            border-radius: 3px;
+        }
+        
+        .result-box {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            transition: var(--transition);
+            border-left: 5px solid var(--accent);
+        }
+        
+        .result-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .metric-card {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            border-top: 3px solid var(--accent);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-3px);
+            background: rgba(15, 23, 42, 0.8);
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--text-light);
+        }
+        
+        .profit {
+            color: var(--success);
+        }
+        
+        .loss {
+            color: var(--danger);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .profit-badge {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+        
+        .loss-badge {
+            background: rgba(248, 113, 113, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+        
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 250px;
+            width: 100%;
+        }
+        
+        .summary-card {
+            background: linear-gradient(to right, #20556b, #2c5364);
+            color: var(--text-light);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            border: 1px solid rgba(76, 201, 240, 0.3);
+        }
+        
+        .summary-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--text-light);
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark);
+            color: var(--text-light);
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            font-weight: normal;
+            border: 1px solid var(--accent);
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .chart-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .chart-wrapper {
+            flex: 1;
+            min-width: 250px;
+            max-height: 300px;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+        
+        .chart-title {
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--accent);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-box {
+                padding: 20px;
+            }
+            
+            .chart-row {
+                flex-direction: column;
+            }
+        }
+        
+        /* Animation classes */
+        .fade-in {
+            animation: fadeIn 0.8s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="fade-in">Investment Analysis Results</h2>
+        
+        <div class="summary-card fade-in">
+            <h3>Investment Summary</h3>
+            <div class="summary-value">₹<%= initialInvestment.toLocaleString() %></div>
+            <p>Initial Investment</p>
+        </div>
+        
+        <div class="result-box fade-in">
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <h3>Net Present Value</h3>
+                    <div class="metric-value <%= npv >= 0 ? 'profit' : 'loss' %>">
+                        ₹<%= npv.toFixed(2).toLocaleString() %>
+                    </div>
+                    <p>The present value of cash flows minus initial investment</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h3>Profitability Index</h3>
+                    <div class="metric-value <%= pi >= 1 ? 'profit' : 'loss' %>">
+                        <%= pi.toFixed(2) %>
+                    </div>
+                    <p>Ratio of present value of cash flows to initial investment</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h3>Internal Rate of Return</h3>
+                    <div class="metric-value <%= irr >= discountRate ? 'profit' : 'loss' %>">
+                        <%= irr.toFixed(2) %>%
+                    </div>
+                    <p>Annualized effective compounded return rate</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h3>Discount Rate</h3>
+                    <div class="metric-value">
+                        <%= discountRate %>%
+                    </div>
+                    <p>Your required rate of return</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <div class="status-badge <%= isProfitable ? 'profit-badge pulse' : 'loss-badge' %>">
+                    <% if (isProfitable) { %>
+                        <i class="fas fa-check-circle"></i> Profitable Investment - Recommended
+                    <% } else { %>
+                        <i class="fas fa-times-circle"></i> Not Profitable - Not Recommended
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        
+        <div class="result-box fade-in">
+            <h3>Cash Flow Visualization</h3>
+            <div class="chart-row">
+                <div class="chart-wrapper">
+                    <div class="chart-title">Annual Cash Flows (Bar Chart)</div>
+                    <div class="chart-container">
+                        <canvas id="cashFlowBarChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <div class="chart-title">Cash Flow Trend (Line Graph)</div>
+                    <div class="chart-container">
+                        <canvas id="cashFlowLineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="result-box fade-in">
+            <h3>Analysis Details</h3>
+            <p><strong>Interpretation:</strong> 
+                <% if (isProfitable) { %>
+                    This investment is expected to generate positive returns. The IRR of <%= irr.toFixed(2) %>% exceeds your required rate of <%= discountRate %>%,
+                    and the NPV of ₹<%= npv.toFixed(2).toLocaleString() %> indicates value creation.
+                <% } else { %>
+                    This investment doesn't meet your required return rate of <%= discountRate %>% (IRR is <%= irr.toFixed(2) %>%).
+                    The negative NPV of ₹<%= npv.toFixed(2).toLocaleString() %> suggests it may destroy value.
+                <% } %>
+            </p>
+            
+            <div style="margin-top: 20px;">
+                <h4>Key Metrics Explained:</h4>
+                <ul style="list-style-type: none; padding: 0;">
+                    <li style="margin-bottom: 10px;">
+                        <span class="tooltip">
+                            <i class="fas fa-info-circle" style="color: var(--accent);"></i> NPV (Net Present Value)
+                            <span class="tooltiptext">The difference between the present value of cash inflows and outflows over time. Positive NPV indicates profitable investment.</span>
+                        </span>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <span class="tooltip">
+                            <i class="fas fa-info-circle" style="color: var(--accent);"></i> PI (Profitability Index)
+                            <span class="tooltiptext">Ratio of payoff to investment. PI > 1 indicates the project creates value.</span>
+                        </span>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <span class="tooltip">
+                            <i class="fas fa-info-circle" style="color: var(--accent);"></i> IRR (Internal Rate of Return)
+                            <span class="tooltiptext">The discount rate that makes NPV zero. Higher IRR means better investment potential.</span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animate elements on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            anime({
+                targets: '.fade-in',
+                opacity: [0, 1],
+                translateY: [20, 0],
+                delay: anime.stagger(100),
+                easing: 'easeOutExpo'
+            });
+            
+            // Add pulse animation to profitable status badge
+            if (document.querySelector('.pulse')) {
+                anime({
+                    targets: '.pulse',
+                    scale: [1, 1.05],
+                    direction: 'alternate',
+                    loop: true,
+                    easing: 'easeInOutSine',
+                    duration: 1500
+                });
+            }
+        });
+        
+        // Common chart options
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `₹${context.raw.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        callback: function(value) {
+                            return '₹' + value.toLocaleString();
+                        },
+                        color: '#e2e8f0',
+                        font: {
+                            size: 10
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(226, 232, 240, 0.1)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#e2e8f0',
+                        font: {
+                            size: 10
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(226, 232, 240, 0.1)'
+                    }
+                }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeOutQuart'
+            }
+        };
+
+        // Chart configuration
+        const cashFlows = <%- JSON.stringify(cashFlows) %>;
+        const labels = cashFlows.map((_, i) => `Year ${i}`);
+        labels[0] = 'Initial Investment';
+        
+        // Bar Chart
+        const barCtx = document.getElementById('cashFlowBarChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Cash Flow (₹)',
+                    data: cashFlows,
+                    backgroundColor: cashFlows.map(value => 
+                        value >= 0 ? 'rgba(74, 222, 128, 0.7)' : 'rgba(248, 113, 113, 0.7)'
+                    ),
+                    borderColor: cashFlows.map(value => 
+                        value >= 0 ? 'rgba(74, 222, 128, 1)' : 'rgba(248, 113, 113, 1)'
+                    ),
+                    borderWidth: 1
+                }]
+            },
+            options: commonChartOptions
+        });
+        
+        // Line Graph
+        const lineCtx = document.getElementById('cashFlowLineChart').getContext('2d');
+        new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Cash Flow Trend',
+                    data: cashFlows,
+                    borderColor: '#4cc9f0',
+                    backgroundColor: 'rgba(76, 201, 240, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true,
+                    pointBackgroundColor: cashFlows.map(value => 
+                        value >= 0 ? '#4ade80' : '#f87171'
+                    ),
+                    pointBorderColor: '#fff',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: commonChartOptions
+        });
+    </script>
+</body>
+</html>
