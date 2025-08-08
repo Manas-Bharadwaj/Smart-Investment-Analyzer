@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>About - Smart Investment Analyzer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #2563eb;
+            --accent-color: #3b82f6;
+            --dark-color: #f9fafb;
+            --light-color: #1f2937;
+            --text-color: #e5e7eb;
+            --text-light: #9ca3af;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            background: linear-gradient(to bottom right, #20556b, #203a43, #2c5364);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background-color: rgba(31, 41, 55, 0.9);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar.scrolled {
+            padding: 1rem 5%;
+            background-color: rgba(31, 41, 55, 0.95);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+                background-color: rgba(31, 41, 55, 0.95);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: left 0.3s ease;
+                backdrop-filter: blur(10px);
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-links li {
+                margin: 1.5rem 0;
+            }
+
+            .background-wrapper {
+                padding: 6rem 5% 3rem;
+            }
+
+            .glass-card {
+                padding: 2rem;
+            }
+
+            .glass-card h2 {
+                font-size: 2rem;
+            }
+
+            .glass-card h3 {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .glass-card {
+                padding: 1.5rem;
+            border-radius: 10px;
+            }
+
+            .glass-card h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar" id="navbar">
+            <div class="logo" id="log">
+                <i class="fas fa-chart-line"></i> Smart Investment Analyzer
+            </div>
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+            <nav>
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="/ipform">Analyzer</a></li>
+                    <li><a href="/home">LogOut</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="background-wrapper">
+        <section class="info-section">
+            <div class="glass-card" data-aos="fade-up">
+                <h2>About Smart Investment Analyzer</h2>
+                <p>Smart Investment Analyzer is a web-based financial tool designed to simplify complex investment evaluations using proven capital budgeting techniques. It empowers users—whether investors, analysts, or business owners—to make smarter decisions based on data and financial logic.</p>
+
+                <h3>What is Capital Budgeting?</h3>
+                <p>Capital budgeting is the process businesses use to evaluate potential major investments or expenses. It helps determine whether a project or investment is worth funding, using various quantitative methods to estimate future profitability.</p>
+
+                <h3>Methods We Use</h3>
+                <ul>
+                    <li><strong>Net Present Value (NPV):</strong> Calculates the difference between the present value of cash inflows and outflows. A positive NPV suggests a profitable investment.</li><br>
+                    <li><strong>Internal Rate of Return (IRR):</strong> The discount rate that makes the NPV of an investment zero. Higher IRR typically means better returns.</li><br>
+                    <li><strong>Profitability Index (PI):</strong> The ratio of the present value of future cash flows to the initial investment. A PI greater than 1 indicates a good investment.</li>
+                </ul>
+
+                <h3>Why Use Our Tool?</h3>
+                <p>Manually calculating these metrics can be time-consuming and error-prone. Our platform automates the entire process and visualizes results clearly, so users can compare multiple projects quickly and confidently.</p>
+
+                <p>Built using <strong>HTML,CSS,JAVASCRIPT</strong> for the frontend and <strong>Node.js + Express.js</strong> for the backend, the Smart Investment Analyzer provides a seamless, interactive experience.</p>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        // Initialize AOS (Animate On Scroll)
+        AOS.init({
+            duration: 800,
+            once: true,
+            easing: 'ease-in-out'
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.getElementById('nav-links');
+
+        mobileMenu.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
